@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>The Gain Plan — Progress</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#080810; --surface:#0f0f1a; --surface2:#161628; --border:#1e1e35;
+  --text:#f0eeff; --muted:#6b6a8a; --soft:#a09dc0;
+  --mon:#ff7eb3; --tue:#7eb8ff; --wed:#7effc4; --fri:#ffe07e;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 50% 50%,rgba(126,184,255,.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,16,.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:1000;}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--muted);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:6px 16px;border-radius:12px;transition:color .2s;}
+.nav a.active{color:var(--tue);}
+.nav a svg{width:20px;height:20px;}
+
+.container{max-width:430px;margin:0 auto;position:relative;z-index:1;padding-bottom:90px;}
+
+.header{padding:52px 24px 24px;}
+.header-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.header-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:900;background:linear-gradient(135deg,#f0eeff,#a09dc0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-title em{font-style:italic;background:linear-gradient(135deg,#7eb8ff,#7effc4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.section-label{font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+
+/* EXERCISE SELECTOR */
+.ex-select-section{padding:0 24px 20px;}
+.ex-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;appearance:none;cursor:pointer;}
+.ex-select:focus{border-color:var(--tue);}
+option{background:var(--surface);color:var(--text);}
+
+/* LOG FORM */
+.log-form-section{padding:0 24px 20px;}
+.log-form{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.form-field label{font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px;}
+.form-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);outline:none;text-align:center;}
+.form-field input:focus{border-color:var(--tue);}
+.rpe-row{margin-bottom:16px;}
+.rpe-label{font-size:9px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.rpe-btns{display:flex;gap:6px;}
+.rpe-btn{flex:1;padding:8px 4px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;text-align:center;}
+.rpe-btn.selected{background:rgba(126,184,255,.15);border-color:var(--tue);color:var(--tue);}
+.log-submit{width:100%;background:linear-gradient(135deg,var(--tue),var(--wed));border:none;border-radius:14px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#000;cursor:pointer;}
+
+/* CHART */
+.chart-section{padding:0 24px 20px;}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;overflow:hidden;}
+.chart-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:4px;}
+.chart-sub{font-size:11px;color:var(--muted);margin-bottom:16px;}
+.chart-empty{text-align:center;padding:30px 0;color:var(--muted);font-size:12px;font-style:italic;}
+.chart-canvas-wrap{overflow-x:auto;}
+
+/* HISTORY */
+.history-section{padding:0 24px;}
+.history-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.history-left{}
+.history-date{font-size:11px;color:var(--muted);margin-bottom:4px;}
+.history-vals{font-size:15px;font-weight:600;}
+.history-rpe{font-size:10px;color:var(--muted);margin-top:2px;}
+.history-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px;}
+.history-pr{font-size:9px;background:rgba(255,224,126,.15);color:var(--fri);padding:3px 7px;border-radius:6px;letter-spacing:.1em;font-weight:600;}
+
+/* PR STREAK */
+.streak-section{padding:0 24px 20px;}
+.streak-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.streak-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;}
+.streak-icon{font-size:22px;margin-bottom:6px;}
+.streak-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;}
+.streak-lbl{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.05em;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-eyebrow">Progressive Overload</div>
+    <div class="header-title"><em>Progress</em> Tracker</div>
+  </div>
+
+  <!-- Exercise Select -->
+  <div class="ex-select-section">
+    <div class="section-label">Select Exercise</div>
+    <select class="ex-select" id="ex-select" onchange="onExerciseChange()">
+      <optgroup label="Monday — Push">
+        <option value="Barbell Bench Press">Barbell Bench Press</option>
+        <option value="Overhead Press">Overhead Press</option>
+        <option value="Incline DB Press">Incline DB Press</option>
+        <option value="Lateral Raises">Lateral Raises</option>
+        <option value="Tricep Pushdown">Tricep Pushdown</option>
+        <option value="Overhead Tricep Ext.">Overhead Tricep Ext.</option>
+      </optgroup>
+      <optgroup label="Tuesday — Pull">
+        <option value="Lat Pulldown">Lat Pulldown</option>
+        <option value="Seated Cable Row">Seated Cable Row</option>
+        <option value="Dumbbell Row">Dumbbell Row</option>
+        <option value="Face Pulls">Face Pulls</option>
+        <option value="Bicep Curl">Bicep Curl</option>
+        <option value="Hammer Curl">Hammer Curl</option>
+      </optgroup>
+      <optgroup label="Wednesday — Legs">
+        <option value="Barbell Squat">Barbell Squat</option>
+        <option value="Romanian Deadlift">Romanian Deadlift</option>
+        <option value="Hip Thrust">Hip Thrust</option>
+        <option value="Hip Abduction Machine">Hip Abduction Machine</option>
+        <option value="Hamstring Curl">Hamstring Curl</option>
+        <option value="Glute Kickback">Glute Kickback</option>
+        <option value="Calf Raises">Calf Raises</option>
+      </optgroup>
+      <optgroup label="Friday — Full Body">
+        <option value="Deadlift">Deadlift</option>
+        <option value="Pull-Ups">Pull-Ups / Assisted</option>
+        <option value="Dips">Dips</option>
+        <option value="Leg Extension">Leg Extension</option>
+        <option value="Dead Bug">Dead Bug (Core)</option>
+        <option value="Stomach Vacuum">Stomach Vacuum</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <!-- Streak cards -->
+  <div class="streak-section">
+    <div class="streak-grid">
+      <div class="streak-card">
+        <div class="streak-icon">🏆</div>
+        <div class="streak-val" id="streak-pr" style="color:var(--fri)">—</div>
+        <div class="streak-lbl">Personal Record</div>
+      </div>
+      <div class="streak-card">
+        <div class="streak-icon">📅</div>
+        <div class="streak-val" id="streak-sessions" style="color:var(--tue)">0</div>
+        <div class="streak-lbl">Sessions Logged</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="chart-section">
+    <div class="chart-wrap">
+      <div class="chart-title" id="chart-title">Weight Over Time</div>
+      <div class="chart-sub" id="chart-sub">Log sessions to see your progress curve</div>
+      <div id="chart-area"></div>
+    </div>
+  </div>
+
+  <!-- Log Form -->
+  <div class="log-form-section">
+    <div class="section-label">Log a Set</div>
+    <div class="log-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label>Weight (lbs)</label>
+          <input id="f-weight" type="number" placeholder="45" min="0" step="2.5"/>
+        </div>
+        <div class="form-field">
+          <label>Reps</label>
+          <input id="f-reps" type="number" placeholder="10" min="1"/>
+        </div>
+        <div class="form-field">
+          <label>Sets</label>
+          <input id="f-sets" type="number" placeholder="3" min="1"/>
+        </div>
+      </div>
+      <div class="rpe-row">
+        <div class="rpe-label">How hard did it feel? (RPE)</div>
+        <div class="rpe-btns">
+          <div class="rpe-btn" onclick="selectRPE(6,this)">6<br/><span style="font-size:9px;color:var(--muted)">Easy</span></div>
+          <div class="rpe-btn" onclick="selectRPE(7,this)">7<br/><span style="font-size:9px;color:var(--muted)">Mod</span></div>
+          <div class="rpe-btn" onclick="selectRPE(8,this)">8<br/><span style="font-size:9px;color:var(--muted)">Hard</span></div>
+          <div class="rpe-btn" onclick="selectRPE(9,this)">9<br/><span style="font-size:9px;color:var(--muted)">V.Hard</span></div>
+          <div class="rpe-btn" onclick="selectRPE(10,this)">10<br/><span style="font-size:9px;color:var(--muted)">Max</span></div>
+        </div>
+      </div>
+      <button class="log-submit" onclick="logSet()">Log This Set</button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-section">
+    <div class="section-label">History</div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Workouts
+  </a>
+  <a href="calories.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+    Calories
+  </a>
+  <a href="overload.html" class="active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Progress
+  </a>
+</nav>
+
+<script>
+let selectedRPE = 8;
+let currentEx = 'Barbell Bench Press';
+
+function selectRPE(val, el) {
+  selectedRPE = val;
+  document.querySelectorAll('.rpe-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function onExerciseChange() {
+  currentEx = document.getElementById('ex-select').value;
+  renderAll();
+}
+
+function getKey(ex) { return 'overload-' + ex.replace(/\s+/g,'-'); }
+
+function getData(ex) {
+  return JSON.parse(localStorage.getItem(getKey(ex)) || '[]');
+}
+
+function saveData(ex, data) {
+  localStorage.setItem(getKey(ex), JSON.stringify(data));
+}
+
+function calcVolume(w, r, s) { return w * r * s; }
+
+function logSet() {
+  const w = parseFloat(document.getElementById('f-weight').value) || 0;
+  const r = parseInt(document.getElementById('f-reps').value) || 0;
+  const s = parseInt(document.getElementById('f-sets').value) || 1;
+  if(!w || !r) { alert('Enter weight and reps.'); return; }
+
+  const data = getData(currentEx);
+  const now = new Date();
+  const entry = {
+    date: now.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+    dateSort: now.toISOString(),
+    weight: w, reps: r, sets: s, rpe: selectedRPE,
+    volume: calcVolume(w,r,s)
+  };
+  data.push(entry);
+  saveData(currentEx, data);
+  renderAll();
+
+  document.getElementById('f-weight').value = '';
+  document.getElementById('f-reps').value = '';
+}
+
+function deleteEntry(ex, idx) {
+  const data = getData(ex);
+  data.splice(idx,1);
+  saveData(ex, data);
+  renderAll();
+}
+
+function renderAll() {
+  const ex = currentEx;
+  const data = getData(ex);
+
+  // PR & sessions
+  const pr = data.reduce((m,d) => d.weight > m ? d.weight : m, 0);
+  document.getElementById('streak-pr').textContent = pr ? pr + ' lbs' : '—';
+  document.getElementById('streak-sessions').textContent = data.length;
+
+  // Chart
+  renderChart(data, ex);
+
+  // History
+  renderHistory(data, ex);
+}
+
+function renderChart(data, ex) {
+  const area = document.getElementById('chart-area');
+  document.getElementById('chart-title').textContent = ex + ' — Weight Progress';
+
+  if(data.length < 2) {
+    area.innerHTML = '<div class="chart-empty">Log at least 2 sessions to see your progress chart 📈</div>';
+    document.getElementById('chart-sub').textContent = 'Log sessions to see your progress curve';
+    return;
+  }
+
+  const weights = data.map(d => d.weight);
+  const maxW = Math.max(...weights);
+  const minW = Math.min(...weights);
+  const range = maxW - minW || 1;
+  const W = 340, H = 120, pad = 20;
+
+  const pts = data.map((d,i) => {
+    const x = pad + (i/(data.length-1)) * (W - pad*2);
+    const y = H - pad - ((d.weight - minW)/range) * (H - pad*2);
+    return {x, y, d};
+  });
+
+  const pathD = pts.map((p,i) => `${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaD = pathD + ` L${pts[pts.length-1].x},${H} L${pts[0].x},${H} Z`;
+
+  const dots = pts.map((p,i) => {
+    const isPR = p.d.weight === maxW;
+    return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isPR?6:4}" fill="${isPR?'var(--fri)':'var(--tue)'}" stroke="var(--bg)" stroke-width="2"/>
+    ${isPR ? `<text x="${p.x.toFixed(1)}" y="${(p.y-10).toFixed(1)}" text-anchor="middle" fill="var(--fri)" font-size="9" font-family="DM Sans">PR</text>` : ''}
+    <text x="${p.x.toFixed(1)}" y="${(p.y+18).toFixed(1)}" text-anchor="middle" fill="var(--muted)" font-size="8" font-family="DM Sans">${p.d.date}</text>`;
+  }).join('');
+
+  const last = data[data.length-1];
+  const first = data[0];
+  const diff = last.weight - first.weight;
+  const sign = diff >= 0 ? '+' : '';
+  document.getElementById('chart-sub').textContent = `${sign}${diff} lbs since you started · Best: ${maxW} lbs`;
+
+  area.innerHTML = `
+    <svg width="100%" viewBox="0 0 ${W} ${H+20}" style="overflow:visible">
+      <defs>
+        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--tue)" stop-opacity=".3"/>
+          <stop offset="100%" stop-color="var(--tue)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${areaD}" fill="url(#cg)"/>
+      <path d="${pathD}" fill="none" stroke="var(--tue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      ${dots}
+    </svg>
+  `;
+}
+
+function renderHistory(data, ex) {
+  const el = document.getElementById('history-list');
+  if(!data.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;font-style:italic;">No sessions logged yet for this exercise.</div>';
+    return;
+  }
+  const maxW = Math.max(...data.map(d=>d.weight));
+  el.innerHTML = [...data].reverse().map((d,ri) => {
+    const origIdx = data.length - 1 - ri;
+    const isPR = d.weight === maxW;
+    return `
+    <div class="history-item">
+      <div class="history-left">
+        <div class="history-date">${d.date}</div>
+        <div class="history-vals">${d.weight} lbs × ${d.reps} reps × ${d.sets} sets</div>
+        <div class="history-rpe">RPE ${d.rpe} · Vol: ${d.volume.toFixed(0)} lbs</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+        ${isPR ? '<span class="history-pr">PR 🏆</span>' : ''}
+        <button class="history-del" onclick="deleteEntry('${ex}',${origIdx})">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Init
+document.querySelectorAll('.rpe-btn')[2].classList.add('selected');
+renderAll();
+</script>
+</body>
+</html>
