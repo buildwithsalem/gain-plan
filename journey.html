@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="Gain Plan"/>
+<title>The Gain Plan — My Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#080810;--surface:#0f0f1a;--surface2:#161628;--border:#1e1e35;--text:#f0eeff;--muted:#6b6a8a;--soft:#a09dc0;--mon:#ff7eb3;--tue:#7eb8ff;--wed:#7effc4;--fri:#ffe07e;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 40% 20%,rgba(255,126,179,.05) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(126,255,196,.04) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.nav{position:fixed;bottom:0;left:0;right:0;background:rgba(8,8,16,.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 20px;z-index:1000;}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--muted);font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border-radius:12px;transition:color .2s;}
+.nav a.active{color:var(--mon);}
+.nav a svg{width:20px;height:20px;}
+.container{max-width:430px;margin:0 auto;position:relative;z-index:1;padding-bottom:100px;}
+.header{padding:52px 24px 20px;}
+.header-eyebrow{font-size:10px;letter-spacing:.35em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.header-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:900;line-height:1.05;background:linear-gradient(135deg,#f0eeff,#a09dc0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-title em{font-style:italic;background:linear-gradient(135deg,#ff7eb3,#ffe07e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.section{padding:0 24px 24px;}
+.section-label{font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+
+/* ─── CONSISTENCY STREAK ─────────────────────── */
+.streak-hero{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:12px;}
+.streak-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+.streak-main{display:flex;align-items:baseline;gap:6px;}
+.streak-num{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--mon);line-height:1;}
+.streak-unit{font-size:14px;color:var(--muted);}
+.streak-label{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.05em;}
+.consistency-pct{text-align:right;}
+.cpct-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--wed);}
+.cpct-lbl{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+
+/* weekly dots */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px;}
+.week-col{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.week-day-lbl{font-size:9px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;}
+.week-dot{width:28px;height:28px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .2s;user-select:none;}
+.week-dot.done{background:rgba(255,126,179,.2);border-color:rgba(255,126,179,.5);}
+.week-dot.done::after{content:'✓';}
+.week-dot.rest{background:rgba(126,184,255,.1);border-color:rgba(126,184,255,.2);}
+.week-dot.rest::after{content:'—';font-size:10px;color:var(--tue);}
+.week-dot.missed{background:rgba(255,255,255,.03);}
+.week-dot.today{box-shadow:0 0 0 2px var(--mon);}
+
+.log-workout-btn{width:100%;background:linear-gradient(135deg,var(--mon),#ff9de0);border:none;border-radius:14px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:#000;cursor:pointer;transition:opacity .2s;}
+.log-workout-btn:active{opacity:.85;}
+.log-workout-btn.logged{background:rgba(126,255,196,.15);border:1px solid rgba(126,255,196,.3);color:var(--wed);}
+
+/* history heatmap */
+.heatmap-wrap{overflow-x:auto;padding-bottom:8px;}
+.heatmap{display:flex;gap:3px;min-width:max-content;}
+.heatmap-col{display:flex;flex-direction:column;gap:3px;}
+.heatmap-cell{width:13px;height:13px;border-radius:3px;background:var(--surface2);}
+.heatmap-cell.w1{background:rgba(255,126,179,.25);}
+.heatmap-cell.w2{background:rgba(255,126,179,.5);}
+.heatmap-cell.w3{background:rgba(255,126,179,.75);}
+.heatmap-cell.w4{background:rgba(255,126,179,1);}
+.heatmap-months{display:flex;gap:3px;min-width:max-content;margin-bottom:4px;}
+.hm-month{font-size:9px;color:var(--muted);letter-spacing:.05em;}
+
+/* ─── TIMELINE ───────────────────────────────── */
+.timeline-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:12px;}
+.timeline-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px;}
+.timeline-sub{font-size:11px;color:var(--muted);margin-bottom:18px;line-height:1.5;}
+.goal-timeline{display:flex;flex-direction:column;gap:14px;}
+.gtl-item{}
+.gtl-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;}
+.gtl-name{font-size:13px;font-weight:500;}
+.gtl-eta{font-size:11px;font-weight:600;letter-spacing:.05em;}
+.gtl-bar-wrap{background:var(--surface2);border-radius:6px;height:8px;overflow:hidden;}
+.gtl-bar{height:100%;border-radius:6px;transition:width .8s cubic-bezier(.4,0,.2,1);}
+.gtl-detail{font-size:10px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between;}
+.consistency-note{margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(255,224,126,.06);border:1px solid rgba(255,224,126,.15);font-size:12px;color:var(--soft);line-height:1.6;}
+.consistency-note strong{color:var(--fri);}
+
+/* ─── PROGRESS PHOTOS ────────────────────────── */
+.photo-add-btn{width:100%;background:none;border:2px dashed var(--border);border-radius:16px;padding:28px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .2s;font-family:'DM Sans',sans-serif;}
+.photo-add-btn:hover{border-color:var(--mon);}
+.photo-add-icon{font-size:28px;}
+.photo-add-lbl{font-size:13px;color:var(--muted);}
+.photo-add-sub{font-size:11px;color:var(--muted);opacity:.6;}
+#photo-input{display:none;}
+
+.photo-filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;}
+.photo-filter{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--muted);white-space:nowrap;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.photo-filter.active{background:rgba(255,126,179,.15);border-color:rgba(255,126,179,.4);color:var(--mon);}
+
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.photo-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;position:relative;}
+.photo-img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;}
+.photo-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(8,8,16,.9));padding:10px 10px 8px;}
+.photo-date{font-size:10px;color:var(--text);font-weight:500;}
+.photo-tag{font-size:9px;color:var(--muted);margin-top:1px;}
+.photo-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);border:none;border-radius:6px;color:var(--muted);cursor:pointer;padding:4px 6px;font-size:11px;}
+.photo-empty{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px;font-style:italic;line-height:1.8;}
+
+/* ─── LIGHTBOX ───────────────────────────────── */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:3000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.lightbox.open{display:flex;}
+.lightbox-img{max-width:100%;max-height:70vh;border-radius:12px;object-fit:contain;}
+.lightbox-info{margin-top:14px;text-align:center;}
+.lightbox-date{font-size:14px;font-weight:500;}
+.lightbox-tag{font-size:12px;color:var(--muted);margin-top:4px;}
+.lightbox-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:none;color:var(--text);font-size:20px;padding:8px 12px;border-radius:10px;cursor:pointer;}
+.lightbox-note{font-size:12px;color:var(--soft);margin-top:8px;max-width:300px;}
+
+/* ─── PHOTO MODAL ────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:28px 24px 44px;width:100%;max-width:430px;margin:0 auto;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:18px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:6px;}
+.modal-field select,.modal-field textarea,.modal-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;}
+.modal-field select:focus,.modal-field textarea:focus{border-color:var(--mon);}
+.modal-field textarea{resize:none;height:72px;}
+.modal-preview{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px;margin-bottom:14px;display:none;}
+.modal-save{width:100%;background:linear-gradient(135deg,var(--mon),#ff9de0);border:none;border-radius:14px;padding:16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:#000;cursor:pointer;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .25s ease;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-eyebrow">Track Your Journey</div>
+    <div class="header-title">My <em>Progress</em></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;font-weight:300;" id="hdr-sub">Consistency builds the body you want</div>
+  </div>
+
+  <!-- ─ CONSISTENCY ─ -->
+  <div class="section">
+    <div class="section-label">This Week's Consistency</div>
+    <div class="streak-hero">
+      <div class="streak-top">
+        <div>
+          <div class="streak-main">
+            <div class="streak-num" id="streak-num">0</div>
+            <div class="streak-unit">day streak</div>
+          </div>
+          <div class="streak-label" id="streak-label">Start logging workouts below</div>
+        </div>
+        <div class="consistency-pct">
+          <div class="cpct-val" id="cpct-val">0%</div>
+          <div class="cpct-lbl">30-day rate</div>
+        </div>
+      </div>
+      <div class="week-grid" id="week-grid"></div>
+      <button class="log-workout-btn" id="log-btn" onclick="logTodayWorkout()">✓ Log Today's Workout</button>
+    </div>
+
+    <!-- heatmap -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;">
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;">90-Day History</div>
+      <div class="heatmap-months" id="heatmap-months"></div>
+      <div class="heatmap-wrap"><div class="heatmap" id="heatmap"></div></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:10px;justify-content:flex-end;">
+        <span style="font-size:9px;color:var(--muted)">Less</span>
+        <div style="width:10px;height:10px;border-radius:2px;background:var(--surface2)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,126,179,.3)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,126,179,.65)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,126,179,1)"></div>
+        <span style="font-size:9px;color:var(--muted)">More</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─ GOAL TIMELINE ─ -->
+  <div class="section">
+    <div class="section-label">Goal Timeline</div>
+    <div class="timeline-card">
+      <div class="timeline-title">Estimated Time to Reach Goals</div>
+      <div class="timeline-sub" id="timeline-sub">Based on your current consistency and realistic progress rates</div>
+      <div class="goal-timeline" id="goal-timeline"></div>
+      <div class="consistency-note" id="consistency-note"></div>
+    </div>
+  </div>
+
+  <!-- ─ PROGRESS PHOTOS ─ -->
+  <div class="section">
+    <div class="section-label">
+      Progress Photos
+      <span style="font-size:10px;color:var(--muted);">Stored privately on your device</span>
+    </div>
+
+    <div class="photo-filter-row" id="photo-filters">
+      <div class="photo-filter active" onclick="filterPhotos('all',this)">All</div>
+      <div class="photo-filter" onclick="filterPhotos('front',this)">Front</div>
+      <div class="photo-filter" onclick="filterPhotos('side',this)">Side</div>
+      <div class="photo-filter" onclick="filterPhotos('back',this)">Back</div>
+      <div class="photo-filter" onclick="filterPhotos('flex',this)">Flex</div>
+    </div>
+
+    <button class="photo-add-btn" onclick="document.getElementById('photo-input').click()">
+      <div class="photo-add-icon">📸</div>
+      <div class="photo-add-lbl">Add Progress Photo</div>
+      <div class="photo-add-sub">Photos stay private on your device</div>
+    </button>
+    <input type="file" id="photo-input" accept="image/*" onchange="onPhotoSelected(event)"/>
+
+    <div style="height:12px"></div>
+    <div class="photo-grid" id="photo-grid"></div>
+  </div>
+</div>
+
+<!-- PHOTO SAVE MODAL -->
+<div class="modal-overlay" id="photo-modal" onclick="closePhotoModal(event)">
+  <div class="modal">
+    <div class="modal-title">Save Progress Photo</div>
+    <img id="modal-preview" class="modal-preview"/>
+    <div class="modal-field">
+      <label>Pose / Angle</label>
+      <select id="photo-tag-select">
+        <option value="front">Front</option>
+        <option value="side">Side</option>
+        <option value="back">Back</option>
+        <option value="flex">Flex / Arms</option>
+        <option value="legs">Legs / Glutes</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Note (optional)</label>
+      <textarea id="photo-note" placeholder="e.g. Week 4 — feeling stronger, waist looking tighter"></textarea>
+    </div>
+    <button class="modal-save" onclick="savePhoto()">Save Photo</button>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img class="lightbox-img" id="lb-img"/>
+  <div class="lightbox-info">
+    <div class="lightbox-date" id="lb-date"></div>
+    <div class="lightbox-tag" id="lb-tag"></div>
+    <div class="lightbox-note" id="lb-note"></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Workouts</a>
+  <a href="calories.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Calories</a>
+  <a href="overload.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Progress</a>
+  <a href="journey.html" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Journey</a>
+</nav>
+
+<script>
+// ─── STORAGE HELPERS ────────────────────────────────────────────────────────
+const KEY_WORKOUTS = 'gainplan-workouts'; // { "2025-03-10": true }
+const KEY_GOALS    = 'gainplan-goals';
+const KEY_PHOTOS   = 'gainplan-photos';   // [{id,dataUrl,tag,note,date}]
+
+function getWorkouts(){ return JSON.parse(localStorage.getItem(KEY_WORKOUTS)||'{}'); }
+function saveWorkouts(d){ localStorage.setItem(KEY_WORKOUTS,JSON.stringify(d)); }
+function getGoals(){ return JSON.parse(localStorage.getItem(KEY_GOALS)||'null')||{waistFrom:'26',waistTo:'23',gluteFrom:'33',gluteTo:'36',waist:true,glutes:true,arms:true,legs:false}; }
+function getPhotos(){ return JSON.parse(localStorage.getItem(KEY_PHOTOS)||'[]'); }
+function savePhotos(p){ localStorage.setItem(KEY_PHOTOS,JSON.stringify(p)); }
+
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function dateKey(d){ return d.toISOString().slice(0,10); }
+
+// ─── CONSISTENCY LOGIC ──────────────────────────────────────────────────────
+function calcStreak(){
+  const w = getWorkouts();
+  let streak = 0;
+  const d = new Date();
+  // don't penalize for today not logged yet — start from yesterday if today not logged
+  if(!w[dateKey(d)]){ d.setDate(d.getDate()-1); }
+  while(w[dateKey(d)]){
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function calc30DayRate(){
+  const w = getWorkouts();
+  let count = 0;
+  const d = new Date();
+  for(let i=0;i<30;i++){
+    if(w[dateKey(d)]) count++;
+    d.setDate(d.getDate()-1);
+  }
+  return Math.round((count/30)*100);
+}
+
+// ─── TIMELINE MATH ──────────────────────────────────────────────────────────
+// Base rates at 100% consistency (3-4 workouts/week)
+// Waist: recomp — lose ~0.25" per 4 weeks at 100%
+// Glutes: grow ~0.5" per 4 weeks at 100%
+// Arms: toned look ~12 weeks at 100%
+// Legs: toned look ~12 weeks at 100%
+function calcTimelines(consistencyPct){
+  const goals = getGoals();
+  const rate = Math.max(consistencyPct / 100, 0.05); // never divide by 0
+  const timelines = [];
+
+  if(goals.waist){
+    const diff = parseFloat(goals.waistFrom||26) - parseFloat(goals.waistTo||23);
+    const inchesPerWeek = 0.06 * rate; // 0.06" per week at 100%
+    const weeksRaw = diff > 0 ? Math.ceil(diff / inchesPerWeek) : 0;
+    const progress = diff > 0 ? Math.min(0, 0) : 100; // starts at 0% until we track measurements
+    timelines.push({
+      name:'Waist 26″ → '+goals.waistTo+'″',
+      weeks: weeksRaw,
+      color:'var(--mon)',
+      detail: `~${(inchesPerWeek*4).toFixed(2)}″ per month at your current consistency`,
+      progressPct: 0,
+      tag:'waist'
+    });
+  }
+
+  if(goals.glutes){
+    const diff = parseFloat(goals.gluteTo||36) - parseFloat(goals.gluteFrom||33);
+    const inchesPerWeek = 0.1 * rate; // 0.1" per week at 100%
+    const weeksRaw = diff > 0 ? Math.ceil(diff / inchesPerWeek) : 0;
+    timelines.push({
+      name:'Glutes '+goals.gluteFrom+'″ → '+goals.gluteTo+'″',
+      weeks: weeksRaw,
+      color:'var(--wed)',
+      detail:`~${(inchesPerWeek*4).toFixed(2)}″ growth per month at your current consistency`,
+      progressPct: 0,
+      tag:'glutes'
+    });
+  }
+
+  if(goals.arms){
+    const baseWeeks = 14;
+    const weeks = Math.ceil(baseWeeks / rate);
+    timelines.push({
+      name:'Toned Arms',
+      weeks,
+      color:'var(--tue)',
+      detail:`Visible definition typically takes ${baseWeeks}–16 weeks of consistent training`,
+      progressPct: 0,
+      tag:'arms'
+    });
+  }
+
+  if(goals.legs){
+    const baseWeeks = 12;
+    const weeks = Math.ceil(baseWeeks / rate);
+    timelines.push({
+      name:'Toned Legs',
+      weeks,
+      color:'var(--fri)',
+      detail:`Quad & hamstring definition typically visible in ${baseWeeks}–14 weeks`,
+      progressPct: 0,
+      tag:'legs'
+    });
+  }
+
+  // Load any saved measurement progress
+  const saved = JSON.parse(localStorage.getItem('gainplan-measurements')||'{}');
+  const goals2 = getGoals();
+  timelines.forEach(tl => {
+    if(tl.tag==='waist' && saved.waistNow){
+      const total = parseFloat(goals2.waistFrom||26) - parseFloat(goals2.waistTo||23);
+      const done  = parseFloat(goals2.waistFrom||26) - parseFloat(saved.waistNow);
+      tl.progressPct = total>0 ? Math.min(Math.max((done/total)*100,0),100) : 0;
+    }
+    if(tl.tag==='glutes' && saved.gluteNow){
+      const total = parseFloat(goals2.gluteTo||36) - parseFloat(goals2.gluteFrom||33);
+      const done  = parseFloat(saved.gluteNow) - parseFloat(goals2.gluteFrom||33);
+      tl.progressPct = total>0 ? Math.min(Math.max((done/total)*100,0),100) : 0;
+    }
+  });
+
+  return timelines;
+}
+
+function weeksToLabel(weeks){
+  if(weeks <= 0) return '🎉 Reached!';
+  if(weeks < 4) return weeks+' week'+(weeks>1?'s':'');
+  const months = (weeks/4.33);
+  if(months < 2) return '~'+Math.round(weeks)+' weeks';
+  return '~'+months.toFixed(1)+' months';
+}
+
+// ─── RENDER FUNCTIONS ────────────────────────────────────────────────────────
+function renderConsistency(){
+  const w = getWorkouts();
+  const today = todayKey();
+  const streak = calcStreak();
+  const rate30 = calc30DayRate();
+  const todayDone = !!w[today];
+
+  document.getElementById('streak-num').textContent = streak;
+  document.getElementById('streak-label').textContent = streak===0 ? 'Log a workout to start your streak' : streak===1 ? 'Day 1 — keep going!' : `${streak} days strong 🔥`;
+  document.getElementById('cpct-val').textContent = rate30+'%';
+  document.getElementById('hdr-sub').textContent = rate30 >= 80 ? '🔥 Crushing it — keep going!' : rate30 >= 50 ? '💪 Good pace — stay consistent' : 'Consistency builds the body you want';
+
+  // Log button
+  const btn = document.getElementById('log-btn');
+  btn.textContent = todayDone ? '✓ Logged today!' : '✓ Log Today\'s Workout';
+  btn.className = 'log-workout-btn' + (todayDone ? ' logged' : '');
+
+  // Week grid
+  const DAYS_LABEL = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  const grid = document.getElementById('week-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<7;i++){
+    const d = new Date(weekStart);
+    d.setDate(weekStart.getDate()+i);
+    const key = dateKey(d);
+    const isToday = key===today;
+    const done = !!w[key];
+    const isFuture = d > new Date();
+    const col = document.createElement('div');
+    col.className = 'week-col';
+    col.innerHTML = `<div class="week-day-lbl">${DAYS_LABEL[i]}</div>
+      <div class="week-dot ${done?'done':isFuture?'':'missed'} ${isToday?'today':''}" onclick="toggleDay('${key}')"></div>`;
+    grid.appendChild(col);
+  }
+
+  renderHeatmap();
+  renderTimeline();
+}
+
+function renderHeatmap(){
+  const w = getWorkouts();
+  const WEEKS = 13; // 91 days
+  const cells = [];
+  const d = new Date();
+  d.setDate(d.getDate() - (WEEKS*7 - 1));
+
+  const hm = document.getElementById('heatmap');
+  const months = document.getElementById('heatmap-months');
+  hm.innerHTML=''; months.innerHTML='';
+
+  let lastMonth = -1;
+  for(let week=0;week<WEEKS;week++){
+    const col = document.createElement('div');
+    col.className='heatmap-col';
+    for(let day=0;day<7;day++){
+      const key = dateKey(d);
+      const done = w[key];
+      const cell = document.createElement('div');
+      cell.className = 'heatmap-cell'+(done?' w4':'');
+      col.appendChild(cell);
+      d.setDate(d.getDate()+1);
+    }
+    hm.appendChild(col);
+  }
+}
+
+function renderTimeline(){
+  const rate30 = calc30DayRate();
+  const timelines = calcTimelines(rate30);
+  const goals = getGoals();
+  const el = document.getElementById('goal-timeline');
+
+  if(!timelines.length){
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:16px 0;">Enable goals in the Workouts tab to see your timeline.</div>';
+    return;
+  }
+
+  el.innerHTML = timelines.map(tl => `
+    <div class="gtl-item">
+      <div class="gtl-header">
+        <div class="gtl-name">${tl.name}</div>
+        <div class="gtl-eta" style="color:${tl.color}">${weeksToLabel(tl.weeks)}</div>
+      </div>
+      <div class="gtl-bar-wrap">
+        <div class="gtl-bar" style="width:${tl.progressPct}%;background:${tl.color};"></div>
+      </div>
+      <div class="gtl-detail">
+        <span>${tl.detail}</span>
+        <span style="color:${tl.color}">${Math.round(tl.progressPct)}%</span>
+      </div>
+    </div>
+  `).join('');
+
+  // Consistency nudge
+  const noteEl = document.getElementById('consistency-note');
+  if(rate30 >= 85){
+    noteEl.innerHTML = '🚀 <strong>Excellent consistency!</strong> Your timeline estimates are at maximum speed. Keep this up and you\'ll hit your goals on schedule.';
+  } else if(rate30 >= 60){
+    noteEl.innerHTML = `📈 <strong>Good consistency (${rate30}%).</strong> At 85%+ you'd reach your goals ${Math.round((1 - rate30/85)*100*0.3)}% faster. One more session per week makes a real difference.`;
+  } else if(rate30 >= 30){
+    noteEl.innerHTML = `⚡ <strong>Building the habit (${rate30}%).</strong> Your timelines adjust to reflect real consistency. Hit 3 workouts/week consistently and your estimates will update automatically.`;
+  } else {
+    noteEl.innerHTML = `💡 <strong>Just getting started.</strong> Log your first workout above! The timeline will update to reflect your actual pace as you build consistency.`;
+  }
+
+  document.getElementById('timeline-sub').textContent = rate30 > 0
+    ? `You're training at ${rate30}% consistency — timelines adjust in real time`
+    : 'Log workouts to see personalised timeline estimates';
+
+  // Measurement update button
+  const saved = JSON.parse(localStorage.getItem('gainplan-measurements')||'{}');
+  const measureHTML = `
+    <div style="margin-top:16px;padding:14px;background:var(--surface2);border-radius:12px;">
+      <div style="font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;">Update Current Measurements</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Waist now (inches)</div>
+          <input id="m-waist" type="number" step="0.5" value="${saved.waistNow||''}" placeholder="${goals.waistFrom||26}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Glutes now (inches)</div>
+          <input id="m-glute" type="number" step="0.5" value="${saved.gluteNow||''}" placeholder="${goals.gluteFrom||33}" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;"/>
+        </div>
+      </div>
+      <button onclick="saveMeasurements()" style="width:100%;margin-top:10px;background:rgba(255,126,179,.15);border:1px solid rgba(255,126,179,.3);border-radius:10px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--mon);cursor:pointer;">Update & Recalculate</button>
+    </div>
+  `;
+  el.insertAdjacentHTML('afterend', measureHTML.replace('</div>\n  ','</div>'));
+}
+
+function saveMeasurements(){
+  const waistNow = document.getElementById('m-waist').value;
+  const gluteNow = document.getElementById('m-glute').value;
+  const saved = {};
+  if(waistNow) saved.waistNow = waistNow;
+  if(gluteNow) saved.gluteNow = gluteNow;
+  localStorage.setItem('gainplan-measurements', JSON.stringify(saved));
+  renderConsistency();
+}
+
+function toggleDay(key){
+  const w = getWorkouts();
+  w[key] = !w[key];
+  if(!w[key]) delete w[key];
+  saveWorkouts(w);
+  renderConsistency();
+}
+
+function logTodayWorkout(){
+  const w = getWorkouts();
+  const today = todayKey();
+  if(w[today]){
+    // already logged — toggle off
+    delete w[today];
+  } else {
+    w[today] = true;
+  }
+  saveWorkouts(w);
+  renderConsistency();
+}
+
+// ─── PHOTOS ─────────────────────────────────────────────────────────────────
+let pendingPhotoDataUrl = null;
+let currentFilter = 'all';
+
+function onPhotoSelected(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    pendingPhotoDataUrl = ev.target.result;
+    document.getElementById('modal-preview').src = pendingPhotoDataUrl;
+    document.getElementById('modal-preview').style.display = 'block';
+    document.getElementById('photo-modal').classList.add('open');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function closePhotoModal(e){
+  if(e.target===document.getElementById('photo-modal')){
+    document.getElementById('photo-modal').classList.remove('open');
+    pendingPhotoDataUrl = null;
+  }
+}
+
+function savePhoto(){
+  if(!pendingPhotoDataUrl) return;
+  const photos = getPhotos();
+  const now = new Date();
+  photos.push({
+    id: Date.now(),
+    dataUrl: pendingPhotoDataUrl,
+    tag: document.getElementById('photo-tag-select').value,
+    note: document.getElementById('photo-note').value,
+    date: now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    dateSort: now.toISOString()
+  });
+  savePhotos(photos);
+  document.getElementById('photo-modal').classList.remove('open');
+  document.getElementById('photo-note').value = '';
+  pendingPhotoDataUrl = null;
+  renderPhotos();
+}
+
+function deletePhoto(id, e){
+  e.stopPropagation();
+  if(!confirm('Delete this photo?')) return;
+  const photos = getPhotos().filter(p=>p.id!==id);
+  savePhotos(photos);
+  renderPhotos();
+}
+
+function openLightbox(id){
+  const p = getPhotos().find(p=>p.id===id);
+  if(!p) return;
+  document.getElementById('lb-img').src = p.dataUrl;
+  document.getElementById('lb-date').textContent = p.date;
+  document.getElementById('lb-tag').textContent = p.tag.charAt(0).toUpperCase()+p.tag.slice(1)+' view';
+  document.getElementById('lb-note').textContent = p.note || '';
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function filterPhotos(tag, el){
+  currentFilter = tag;
+  document.querySelectorAll('.photo-filter').forEach(f=>f.classList.remove('active'));
+  el.classList.add('active');
+  renderPhotos();
+}
+
+function renderPhotos(){
+  const photos = getPhotos().filter(p => currentFilter==='all' || p.tag===currentFilter);
+  const grid = document.getElementById('photo-grid');
+
+  if(!photos.length){
+    grid.innerHTML = `<div class="photo-empty" style="grid-column:span 2">
+      ${currentFilter==='all' ? '📸 No photos yet.<br/>Tap the button above to add your first progress photo.' : `No ${currentFilter} photos yet.`}
+    </div>`;
+    return;
+  }
+
+  // Sort newest first
+  const sorted = [...photos].sort((a,b)=>new Date(b.dateSort)-new Date(a.dateSort));
+  grid.innerHTML = sorted.map(p=>`
+    <div class="photo-card fade-up" onclick="openLightbox(${p.id})">
+      <img class="photo-img" src="${p.dataUrl}" loading="lazy"/>
+      <div class="photo-overlay">
+        <div class="photo-date">${p.date}</div>
+        <div class="photo-tag">${p.tag.charAt(0).toUpperCase()+p.tag.slice(1)} view</div>
+      </div>
+      <button class="photo-del" onclick="deletePhoto(${p.id},event)">×</button>
+    </div>
+  `).join('');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderConsistency();
+renderPhotos();
+</script>
+</body>
+</html>
